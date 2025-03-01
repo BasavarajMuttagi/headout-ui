@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import GamePlayForm from "@/components/GamePlayForm";
 
 export default function GameLobby() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -303,6 +304,7 @@ export default function GameLobby() {
               </Card>
             </div>
           </div>
+          <GamePlayForm />
         </main>
 
         {/* Footer */}
