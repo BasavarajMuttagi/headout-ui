@@ -62,11 +62,11 @@ export default function Landing() {
               {mobileMenuOpen ? <X /> : <Menu />}
             </button>
 
-            {/* Sign in button - hidden on mobile */}
+            {/* Login in button - hidden on mobile */}
             <div className="group relative hidden sm:block">
               <div className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] opacity-75 blur transition duration-200 group-hover:opacity-100"></div>
               <button className="relative flex items-center rounded-full bg-white px-3 py-1.5 text-sm leading-none font-medium text-[#6d28d9] sm:px-5 sm:py-2 sm:text-base">
-                Sign In
+                <Link to={"/auth/login"}>Log In</Link>
               </button>
             </div>
           </div>
@@ -94,7 +94,7 @@ export default function Landing() {
                 className="mt-2 flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] px-3 py-2 text-sm font-medium text-white"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Sign In
+                <Link to={"/auth/login"}>Log In</Link>
               </button>
             </div>
           </div>
