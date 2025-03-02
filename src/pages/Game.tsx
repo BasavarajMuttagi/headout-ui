@@ -21,7 +21,7 @@ export default function Game() {
   const { sessionId } = useParams();
   const navigate = useNavigate();
   const token = getToken();
-
+  const [score, setScore] = useState(0);
   const getQuestions = useCallback(
     async (questionNumber: number) => {
       setLoadingQuestion(true);
@@ -67,6 +67,7 @@ export default function Game() {
           cannonRef.current?.fire();
           setIsGameCompleted(true);
         }
+        getCurrentScore();
         return response.data;
       } catch (error) {
         console.log("Error submitting answer:", error);
@@ -96,10 +97,25 @@ export default function Game() {
       });
       navigate(`/game/${sessionRes.data.id}`, { replace: true });
       setIsGameCompleted(false);
+      setScore(0);
     } catch (error) {
       console.error(error);
     }
   }, [token, navigate]);
+
+  const getCurrentScore = useCallback(async () => {
+    try {
+      const res = await apiClient.get(`/game/session/${sessionId}/score`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setScore(res.data.score);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch score");
+    }
+  }, [sessionId, token]);
+
   return (
     <ScrollArea className="relative h-screen">
       <div className="font-jakarta relative flex min-h-screen flex-col overflow-hidden bg-gradient-to-br from-[#f5edff] via-[#e6f0ff] to-[#e6fff0]">
@@ -118,6 +134,7 @@ export default function Game() {
                 question={question}
                 handleSubmit={handleSubmit}
                 onNextQuestion={onNextQuestion}
+                score={score}
               />
             ) : null}
           </div>

@@ -11,17 +11,11 @@ import {
 import { cn } from "@/lib/utils";
 import { Question } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ArrowRight,
-  Check,
-  CheckCircle,
-  Clock,
-  HelpCircle,
-  X,
-} from "lucide-react";
+import { ArrowRight, Check, CheckCircle, HelpCircle, X } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { AnimatedCircularProgressBar } from "./magicui/animated-circular-progress-bar";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
 const formSchema = z.object({
@@ -36,19 +30,21 @@ interface GamePlayFormProps {
     destinationId: string,
   ) => Promise<{ validity: boolean; destinationId: string } | null>;
   onNextQuestion: () => void;
+  score: number;
 }
 
 export default function GamePlayForm({
   question,
   handleSubmit,
   onNextQuestion,
+  score,
 }: GamePlayFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<{
     validity: boolean;
     destinationId: string;
   } | null>(null);
-  const [timeRemaining] = useState(30);
+
   const [showHint, setShowHint] = useState(false);
 
   const form = useForm<FormValues>({
@@ -95,13 +91,17 @@ export default function GamePlayForm({
           >
             Question {question.questionNumber}/{question.totalQuestions}
           </Badge>
-          <Badge
-            variant="outline"
-            className="rounded-full border-white/30 bg-white/20 text-white backdrop-blur-sm"
-          >
-            <Clock className="mr-2 h-4 w-4" />
-            <span className="font-medium">{timeRemaining}s</span>
-          </Badge>
+          <div>
+            <AnimatedCircularProgressBar
+              max={question.totalQuestions}
+              min={0}
+              value={score}
+              gaugePrimaryColor="#F6F2FD"
+              gaugeSecondaryColor="#B491EC"
+              className="size-10 text-sm text-white"
+            />
+            <p className="font-medium text-white">Score</p>
+          </div>
         </div>
       </div>
 
