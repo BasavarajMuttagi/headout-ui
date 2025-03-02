@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import GamePlayForm from "@/components/GamePlayForm";
 import Header from "@/components/Header";
 import { Confetti, ConfettiRef } from "@/components/magicui/confetti";
+import SharePreview from "@/components/SharePreview";
 import { ConfettiSideCannons } from "@/components/SideCannons";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -139,14 +140,15 @@ export default function Game() {
             ) : null}
           </div>
           {isGameCompleted && (
-            <div className="mt-6 text-center">
+            <div className="mt-10 flex w-full flex-col items-center space-y-5 space-x-0 text-center sm:flex-row sm:items-center sm:justify-center sm:space-y-0 sm:space-x-5">
               <Button
                 onClick={playAgain}
-                className="animate-float w-fit cursor-pointer rounded-md bg-gradient-to-r from-pink-500 to-[#6d28d9] text-white transition-opacity hover:opacity-90"
+                className="w-fit cursor-pointer rounded-md bg-gradient-to-r from-pink-500 to-[#6d28d9] text-white transition-opacity hover:opacity-90"
                 size="lg"
               >
                 Play Again
               </Button>
+              <SharePreview sessionId={sessionId!} />
             </div>
           )}
         </main>
