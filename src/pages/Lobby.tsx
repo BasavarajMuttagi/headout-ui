@@ -51,6 +51,33 @@ export default function Lobby() {
             />
           </div>
         </main>
+
+        {/* Decorative Elements */}
+        <div className="absolute right-0 bottom-0 left-0 z-0 h-48 bg-gradient-to-t from-white/80 to-transparent"></div>
+
+        {/* Floating Elements */}
+        <div
+          className="animate-float absolute right-1/4 bottom-20 h-20 w-20 rounded-full bg-yellow-400 opacity-50"
+          style={{ animationDelay: "3s" }}
+        ></div>
+        <div
+          className="animate-float absolute top-40 left-1/4 h-12 w-12 rounded-full bg-red-400 opacity-50"
+          style={{ animationDelay: "2s" }}
+        ></div>
+        <div className="animate-float absolute top-20 right-20 h-16 w-16 rounded-full bg-green-400 opacity-50"></div>
+
+        <div
+          className="animate-float absolute bottom-40 left-20 h-24 w-24 rounded-full bg-blue-400 opacity-50"
+          style={{ animationDelay: "1s" }}
+        ></div>
+
+        {/* Cloud-like elements */}
+        <div className="absolute right-0 bottom-0 left-0 z-0 h-32">
+          <div className="absolute bottom-0 left-[10%] h-20 w-40 rounded-t-full bg-white/80"></div>
+          <div className="absolute bottom-0 left-[25%] h-28 w-60 rounded-t-full bg-white/80"></div>
+          <div className="absolute bottom-0 left-[50%] h-24 w-80 rounded-t-full bg-white/80"></div>
+          <div className="absolute bottom-0 left-[75%] h-16 w-40 rounded-t-full bg-white/80"></div>
+        </div>
         <Footer />
       </div>
     </ScrollArea>

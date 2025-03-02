@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { getDecodedToken, setToken, getToken } from "@/utils";
+import { getDecodedToken, getToken, setToken } from "@/utils";
 import { Globe, LogOut, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -65,9 +65,11 @@ export default function Header() {
             <>
               <div className="hidden items-center gap-2 sm:flex">
                 <Avatar className="h-8 w-8 border-2 border-[#8b5cf6]">
-                  <AvatarFallback className="capitalize">
-                    {user.username.substring(0, 1)}
-                    {user.username.substring(user.username.length - 1)}
+                  <AvatarFallback>
+                    {user.username.substring(0, 1).toUpperCase()}
+                    {user.username
+                      .substring(user.username.length - 1)
+                      .toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <span className="text-sm font-medium text-[#4c1d95]">
@@ -95,8 +97,10 @@ export default function Header() {
                 <div className="flex items-center gap-2 pb-2">
                   <Avatar className="h-8 w-8 border-2 border-[#8b5cf6]">
                     <AvatarFallback className="capitalize">
-                      {user.username.substring(0, 1)}
-                      {user.username.substring(user.username.length - 1)}
+                      {user.username.substring(0, 1).toUpperCase()}
+                      {user.username
+                        .substring(user.username.length - 1)
+                        .toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <span className="text-sm font-medium text-[#4c1d95]">

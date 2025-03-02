@@ -1,12 +1,6 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Question } from "@/utils";
-import { Check, CheckCircle, Clock, HelpCircle, X } from "lucide-react";
-import { useState } from "react";
 import {
   Form,
   FormControl,
@@ -14,8 +8,21 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { cn } from "@/lib/utils";
+import { Question } from "@/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  ArrowRight,
+  Check,
+  CheckCircle,
+  Clock,
+  HelpCircle,
+  X,
+} from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
 const formSchema = z.object({
   answer: z.string().min(1, "Please select an answer"),
@@ -28,11 +35,13 @@ interface GamePlayFormProps {
   handleSubmit: (
     destinationId: string,
   ) => Promise<{ validity: boolean; destinationId: string } | null>;
+  onNextQuestion: () => void;
 }
 
 export default function GamePlayForm({
   question,
   handleSubmit,
+  onNextQuestion,
 }: GamePlayFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<{
@@ -77,7 +86,7 @@ export default function GamePlayForm({
   };
 
   return (
-    <div className="container mx-auto mt-20 max-w-4xl rounded-md border-[#e9d5ff] bg-white/80 shadow-md backdrop-blur-sm">
+    <div className="container mx-auto mt-20 max-w-3xl rounded-md border-[#e9d5ff] bg-white/80 shadow-md backdrop-blur-sm">
       <div className="rounded-t-md bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] p-6 py-8">
         <div className="flex items-center justify-between">
           <Badge
@@ -146,15 +155,29 @@ export default function GamePlayForm({
               )}
             />
 
-            <Button
-              type="submit"
-              className="w-fit self-end rounded-md bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white transition-opacity hover:opacity-90"
-              disabled={isSubmitting || !!result}
-              size="default"
-            >
-              <Check className="mr-2 h-5 w-5" />
-              Submit Answer
-            </Button>
+            <div className="flex justify-end space-x-4">
+              {!result && (
+                <Button
+                  type="submit"
+                  className="w-fit rounded-md bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white transition-opacity hover:opacity-90"
+                  disabled={isSubmitting || !!result}
+                  size="default"
+                >
+                  <Check className="mr-2 h-5 w-5" />
+                  Submit Answer
+                </Button>
+              )}
+              {result && question.questionNumber < question.totalQuestions && (
+                <Button
+                  onClick={onNextQuestion}
+                  className="w-fit rounded-md bg-gradient-to-r from-[#8b5cf6] to-gray-900 text-white transition-opacity hover:opacity-90"
+                  size="default"
+                >
+                  <ArrowRight className="mr-2 h-5 w-5" />
+                  Next Question
+                </Button>
+              )}
+            </div>
           </form>
         </Form>
 
