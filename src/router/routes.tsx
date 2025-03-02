@@ -1,9 +1,9 @@
-import Login from "@/components/Login";
 import Landing from "@/pages/Landing";
 import Lobby from "@/pages/Lobby";
 import { createBrowserRouter } from "react-router-dom";
-import Private from "./Private";
 import Public from "./Public";
+import Private from "./Private";
+import Game from "@/pages/Game";
 
 const routes = createBrowserRouter([
   {
@@ -14,8 +14,8 @@ const routes = createBrowserRouter([
         element: <Landing />,
       },
       {
-        path: "/auth/login",
-        element: <Login />,
+        path: "/lobby",
+        element: <Lobby />,
       },
     ],
   },
@@ -23,8 +23,8 @@ const routes = createBrowserRouter([
     element: <Private />,
     children: [
       {
-        path: "/lobby",
-        element: <Lobby />,
+        path: "/game",
+        element: <Game />,
       },
     ],
   },

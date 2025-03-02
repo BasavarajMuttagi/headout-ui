@@ -63,12 +63,6 @@ export default function Landing() {
             </button>
 
             {/* Login in button - hidden on mobile */}
-            <div className="group relative hidden sm:block">
-              <div className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] opacity-75 blur transition duration-200 group-hover:opacity-100"></div>
-              <button className="relative flex items-center rounded-full bg-white px-3 py-1.5 text-sm leading-none font-medium text-[#6d28d9] sm:px-5 sm:py-2 sm:text-base">
-                <Link to={"/auth/login"}>Log In</Link>
-              </button>
-            </div>
           </div>
         </div>
 
@@ -90,12 +84,6 @@ export default function Landing() {
               >
                 About
               </Link>
-              <button
-                className="mt-2 flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] px-3 py-2 text-sm font-medium text-white"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Link to={"/auth/login"}>Log In</Link>
-              </button>
             </div>
           </div>
         )}
@@ -123,11 +111,13 @@ export default function Landing() {
             <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 lg:justify-start">
               <div className="group relative">
                 <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] opacity-75 blur transition duration-200 group-hover:opacity-100"></div>
-                <button className="relative flex items-center rounded-lg bg-[#7c3aed] px-4 py-2 text-sm leading-none font-medium text-white sm:px-6 sm:py-3 sm:text-base">
-                  <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                  Play Now
-                  <ChevronRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
-                </button>
+                <Link to="/lobby">
+                  <button className="relative flex cursor-pointer items-center rounded-lg bg-[#7c3aed] px-4 py-2 text-sm leading-none font-medium text-white sm:px-6 sm:py-3 sm:text-base">
+                    <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                    Play Now
+                    <ChevronRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
+                  </button>
+                </Link>
               </div>
               <button className="flex items-center rounded-lg border-2 border-[#7c3aed] px-4 py-2 text-sm leading-none font-medium text-[#7c3aed] transition-colors hover:bg-[#7c3aed]/5 sm:px-6 sm:py-2.5 sm:text-base">
                 <Share2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />

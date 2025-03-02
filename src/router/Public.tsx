@@ -1,17 +1,11 @@
-import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { Navigate, Outlet } from "react-router-dom";
 
 const Public = () => {
-  return (
-    <>
-      <SignedOut>
-        <Outlet />
-      </SignedOut>
-      <SignedIn>
-        <Navigate to="/lobby" />
-      </SignedIn>
-    </>
-  );
+  const token = localStorage.getItem("token");
+  if (token) {
+    return <Navigate to="/game" />;
+  }
+  return <Outlet />;
 };
 
 export default Public;

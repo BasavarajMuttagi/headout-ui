@@ -2,34 +2,40 @@ import {
   ChevronRight,
   Compass,
   Globe,
-  LogOut,
-  Menu,
+  Loader2,
   Play,
   Trophy,
-  X,
 } from "lucide-react";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 
 // Import shadcn components
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import apiClient from "@/axios/apiClient";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import GamePlayForm from "@/components/GamePlayForm";
+import { setToken } from "@/utils";
 
 export default function GameLobby() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Mock user data
-  const user = {
-    name: "Alex Johnson",
-    level: 8,
-    points: 1250,
-    rank: 42,
-    avatar: "https://i.pravatar.cc/150?img=32",
+  const [userName, setUserName] = useState("");
+  const [isLoading, setLoading] = useState(false);
+  const handleLogin = async (e: FormEvent) => {
+    if (userName.trim() === "") return;
+    try {
+      e.preventDefault();
+      setLoading(true);
+      const response = await apiClient.post("/user/create", {
+        username: userName,
+      });
+      setToken(response.data.token);
+      location.reload();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,99 +61,11 @@ export default function GameLobby() {
                 Globetrotter
               </span>
             </div>
-
-            <div className="flex items-center gap-2 sm:gap-4">
-              {/* Desktop navigation */}
-              <div className="hidden items-center gap-4 sm:flex">
-                <Button
-                  variant="link"
-                  className="text-[#4c1d95] hover:text-[#6d28d9]"
-                  asChild
-                >
-                  <Link to={"#"}>Leaderboard</Link>
-                </Button>
-                <Button
-                  variant="link"
-                  className="text-[#4c1d95] hover:text-[#6d28d9]"
-                  asChild
-                >
-                  <Link to={"#"}>About</Link>
-                </Button>
-              </div>
-
-              {/* Mobile menu button */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-[#6d28d9] sm:hidden"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                {mobileMenuOpen ? <X /> : <Menu />}
-              </Button>
-
-              {/* User profile */}
-              <div className="hidden items-center gap-2 sm:flex">
-                <Avatar className="h-8 w-8 border-2 border-[#8b5cf6]">
-                  <AvatarImage src={user.avatar} alt="Profile" />
-                  <AvatarFallback>AJ</AvatarFallback>
-                </Avatar>
-                <span className="text-sm font-medium text-[#4c1d95]">
-                  {user.name}
-                </span>
-              </div>
-            </div>
           </div>
-
-          {/* Mobile menu */}
-          {mobileMenuOpen && (
-            <Card className="absolute top-16 right-0 left-0 z-30 rounded-b-lg bg-white/95 p-4 shadow-lg backdrop-blur-sm sm:hidden">
-              <CardContent className="p-0 pt-4">
-                <div className="flex flex-col space-y-3">
-                  <div className="flex items-center gap-2 pb-2">
-                    <Avatar className="h-8 w-8 border-2 border-[#8b5cf6]">
-                      <AvatarImage src={user.avatar} alt="Profile" />
-                      <AvatarFallback>AJ</AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm font-medium text-[#4c1d95]">
-                      {user.name}
-                    </span>
-                  </div>
-                  <Separator className="bg-purple-100" />
-                  <Button
-                    variant="ghost"
-                    className="justify-start px-0 text-[#4c1d95]"
-                    asChild
-                  >
-                    <Link to={"#"} onClick={() => setMobileMenuOpen(false)}>
-                      Leaderboard
-                    </Link>
-                  </Button>
-                  <Separator className="bg-purple-100" />
-                  <Button
-                    variant="ghost"
-                    className="justify-start px-0 text-[#4c1d95]"
-                    asChild
-                  >
-                    <Link to={"#"} onClick={() => setMobileMenuOpen(false)}>
-                      About
-                    </Link>
-                  </Button>
-                  <Separator className="bg-purple-100" />
-                  <Button
-                    className="mt-2 bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Log Out
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </header>
 
         {/* Main Content */}
-        <main className="z-10 flex flex-1 flex-col px-4 py-6">
+        <main className="z-10 flex flex-1 flex-col justify-center px-4 py-6">
           <div className="container mx-auto max-w-4xl">
             {/* Game intro section */}
             <Card className="mb-8 border-[#e9d5ff] bg-white/80 shadow-md backdrop-blur-sm">
@@ -202,109 +120,40 @@ export default function GameLobby() {
                     </Card>
                   </div>
 
-                  <div className="flex flex-col items-center gap-4 sm:flex-row">
-                    <div className="group relative">
+                  <form
+                    className="flex flex-col items-center gap-4"
+                    onSubmit={(e) => handleLogin(e)}
+                  >
+                    <Input
+                      type="text"
+                      placeholder="username"
+                      required
+                      onChange={(e) => setUserName(e.target.value)}
+                      className="w-full"
+                    />
+
+                    <div className="group relative w-full">
                       <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] opacity-75 blur transition duration-200 group-hover:opacity-100"></div>
-                      <Button className="relative bg-[#7c3aed] text-white">
-                        <Play className="mr-2 h-5 w-5" />
-                        Start Game
-                        <ChevronRight className="ml-1 h-4 w-4" />
+                      <Button
+                        type="submit"
+                        className="relative w-full bg-[#7c3aed] text-white"
+                      >
+                        {isLoading ? (
+                          <Loader2 className="animate-spin" />
+                        ) : (
+                          <>
+                            <Play className="mr-2 h-5 w-5" />
+                            Start Game
+                            <ChevronRight className="ml-1 h-4 w-4" />
+                          </>
+                        )}
                       </Button>
                     </div>
-                  </div>
+                  </form>
                 </div>
               </CardContent>
             </Card>
-
-            {/* Stats and leaderboard preview */}
-            <div className="grid gap-6 sm:grid-cols-2">
-              <Card className="border-[#e9d5ff] bg-white/80 shadow-md backdrop-blur-sm">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base font-bold text-[#4c1d95]">
-                    Your Stats
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3 px-6 pb-6">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">
-                      Total Games Played:
-                    </span>
-                    <span className="font-medium text-[#4c1d95]">24</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">
-                      Correct Answers:
-                    </span>
-                    <span className="font-medium text-[#4c1d95]">187</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">
-                      Accuracy Rate:
-                    </span>
-                    <span className="font-medium text-[#4c1d95]">78%</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Best Score:</span>
-                    <span className="font-medium text-[#4c1d95]">9/10</span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-[#e9d5ff] bg-white/80 shadow-md backdrop-blur-sm">
-                <CardHeader className="pb-2">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-base font-bold text-[#4c1d95]">
-                      Top Players
-                    </CardTitle>
-                    <Button
-                      variant="link"
-                      size="sm"
-                      className="text-xs font-medium text-[#7c3aed]"
-                      asChild
-                    >
-                      <Link to="#">View Full Leaderboard</Link>
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-2 px-6 pb-6">
-                  {[
-                    { name: "Sarah K.", score: 2450, rank: 1 },
-                    { name: "Mike T.", score: 2340, rank: 2 },
-                    { name: "Alex Johnson", score: 1250, rank: 42 },
-                  ].map((player, index) => (
-                    <div
-                      key={index}
-                      className={`flex items-center justify-between rounded-lg p-2 ${
-                        player.name === user.name ? "bg-[#f3e8ff]" : ""
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Badge
-                          variant={index < 2 ? "default" : "outline"}
-                          className={`flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs font-medium ${
-                            index < 2
-                              ? "bg-[#8b5cf6] text-white"
-                              : "bg-gray-100 text-gray-700"
-                          }`}
-                        >
-                          {player.rank}
-                        </Badge>
-                        <span
-                          className={`text-sm ${player.name === user.name ? "font-medium" : ""}`}
-                        >
-                          {player.name}
-                        </span>
-                      </div>
-                      <span className="text-sm font-medium text-[#7e22ce]">
-                        {player.score}
-                      </span>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </div>
           </div>
-          <GamePlayForm />
         </main>
 
         {/* Footer */}
