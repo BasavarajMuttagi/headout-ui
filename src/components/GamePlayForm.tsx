@@ -1,109 +1,163 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Check, Clock, HelpCircle } from "lucide-react";
+import { Question } from "@/utils";
+import { Check, CheckCircle, Clock, HelpCircle, X } from "lucide-react";
 import { useState } from "react";
-import { Label } from "./ui/label";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { cn } from "@/lib/utils";
 
-export default function GamePlayForm() {
-  const [selectedOption, setSelectedOption] = useState("");
+const formSchema = z.object({
+  answer: z.string().min(1, "Please select an answer"),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
+interface GamePlayFormProps {
+  question: Question;
+  handleSubmit: (
+    destinationId: string,
+  ) => Promise<{ validity: boolean; destinationId: string } | null>;
+}
+
+export default function GamePlayForm({
+  question,
+  handleSubmit,
+}: GamePlayFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [result, setResult] = useState<{
+    validity: boolean;
+    destinationId: string;
+  } | null>(null);
   const [timeRemaining] = useState(30);
   const [showHint, setShowHint] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Mock question data
-  const question = {
-    id: 1,
-    clue: "This ancient wonder sits at the edge of a desert plateau, with the body of a lion and the head of a human. It has stood guard for over 4,500 years near three famous pyramids.",
-    options: [
-      { id: "a", text: "The Sphinx of Giza", color: "bg-[#8b5cf6]" },
-      { id: "b", text: "Petra", color: "bg-[#3b82f6]" },
-      { id: "c", text: "Machu Picchu", color: "bg-[#10b981]" },
-      { id: "d", text: "Angkor Wat", color: "bg-[#f43f5e]" },
-    ],
-    correctAnswer: "a",
-    hint: "It's located in Egypt and is one of the world's oldest and largest monumental sculptures.",
-    difficulty: "Medium",
-    points: 150,
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      answer: "",
+    },
+  });
+
+  const onSubmit = async (values: FormValues) => {
+    setIsSubmitting(true);
+    const submissionResult = await handleSubmit(values.answer);
+    setResult(submissionResult);
+    setIsSubmitting(false);
   };
 
-  const handleSubmit = () => {
-    setIsSubmitted(true);
+  const getOptionStyle = (optionId: string, fieldValue: string) => {
+    if (!result) return "peer-data-[state=checked]:bg-neutral-200";
+
+    if (optionId === result.destinationId) return "bg-green-100 text-green-700";
+    if (fieldValue === optionId) return "bg-red-100 text-red-700";
+    return "";
+  };
+
+  const renderResultIcon = (optionId: string, fieldValue: string) => {
+    if (!result) return null;
+
+    if (optionId === result.destinationId) {
+      return <CheckCircle className="h-5 w-5 text-green-700" />;
+    }
+    if (fieldValue === optionId) {
+      return <X className="h-5 w-5 text-red-700" />;
+    }
+    return null;
   };
 
   return (
     <div className="container mx-auto mt-20 max-w-4xl rounded-md border-[#e9d5ff] bg-white/80 shadow-md backdrop-blur-sm">
-      {/* Header */}
-      <div className="rounded-t-md bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] p-6">
+      <div className="rounded-t-md bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] p-6 py-8">
         <div className="flex items-center justify-between">
           <Badge
             variant="outline"
             className="rounded-full border-white/30 bg-white/20 text-white backdrop-blur-sm"
           >
-            Question 1/10
+            Question {question.questionNumber}/{question.totalQuestions}
           </Badge>
-
           <Badge
             variant="outline"
             className="rounded-full border-white/30 bg-white/20 text-white backdrop-blur-sm"
           >
-            <Clock />
+            <Clock className="mr-2 h-4 w-4" />
             <span className="font-medium">{timeRemaining}s</span>
           </Badge>
         </div>
       </div>
 
       <div className="flex flex-col gap-6 p-6">
-        {/* Question */}
-        <Alert className="rounded-xl border-[#d8b4fe] bg-[#f5edff] text-[#6d28d9]">
-          <AlertDescription className="text-[#6d28d9]">
-            {question.clue}
+        <Alert className="min-h-24 rounded-md border-[#d8b4fe] bg-[#f5edff] font-semibold text-[#6d28d9] italic">
+          <AlertDescription className="space-y-2 text-balance text-[#6d28d9]">
+            {question.clues.map((clue, index) => (
+              <div key={index}>{`${index + 1}. ${clue.text}`}</div>
+            ))}
           </AlertDescription>
         </Alert>
 
-        {/* Answer options using Radio Group */}
-        <div className="">
-          <RadioGroup
-            value={selectedOption}
-            onValueChange={(value) =>
-              !isSubmitted && value && setSelectedOption(value)
-            }
-            className="grid grid-cols-1 gap-4 md:grid-cols-2"
-          >
-            {question.options.map((option) => (
-              <div key={option.id} className="flex items-center">
-                <RadioGroupItem
-                  value={option.id}
-                  id={option.id}
-                  className="peer sr-only"
-                  onClick={() => !isSubmitted && setSelectedOption(option.id)}
-                />
-                <Label
-                  htmlFor={option.id}
-                  className="w-full cursor-pointer rounded-md border p-5 peer-data-[state=checked]:bg-neutral-200"
-                >
-                  <span>{option.text}</span>
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
-        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
+              name="answer"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      className="grid grid-cols-1 gap-4 md:grid-cols-2"
+                      disabled={isSubmitting || !!result}
+                    >
+                      {question?.options.map((option) => (
+                        <FormItem key={option.id}>
+                          <FormControl>
+                            <RadioGroupItem
+                              value={option.id}
+                              id={option.id}
+                              className="peer sr-only"
+                            />
+                          </FormControl>
+                          <FormLabel
+                            htmlFor={option.id}
+                            className={cn(
+                              "flex w-full cursor-pointer items-center justify-between rounded-md border p-5",
+                              getOptionStyle(option.id, field.value),
+                            )}
+                          >
+                            <span>{`${option.city}, ${option.country}`}</span>
+                            {renderResultIcon(option.id, field.value)}
+                          </FormLabel>
+                        </FormItem>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
-        {/* Bottom section with hint and submit button */}
-        <div className="flex flex-col">
-          {/* Submit button */}
-          <Button
-            className="w-fit self-end rounded-md bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white transition-opacity hover:opacity-90"
-            onClick={handleSubmit}
-            disabled={!selectedOption || isSubmitted}
-            size="sm"
-          >
-            <Check className="mr-2 h-5 w-5" />
-            Submit Answer
-          </Button>
-        </div>
-        {/* Hint section */}
+            <Button
+              type="submit"
+              className="w-fit self-end rounded-md bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white transition-opacity hover:opacity-90"
+              disabled={isSubmitting || !!result}
+              size="default"
+            >
+              <Check className="mr-2 h-5 w-5" />
+              Submit Answer
+            </Button>
+          </form>
+        </Form>
+
         <div className="w-full">
           {showHint ? (
             <Alert
@@ -112,20 +166,42 @@ export default function GamePlayForm() {
             >
               <HelpCircle className="h-5 w-5" />
               <AlertTitle>Hint</AlertTitle>
-              <AlertDescription>{question.hint}</AlertDescription>
+              <AlertDescription>
+                {question.triviaItems[0].text}
+              </AlertDescription>
             </Alert>
           ) : (
             <Button
               variant="outline"
               className="w-fit rounded-xl border-[#d8b4fe] text-[#7c3aed] hover:bg-[#f5edff] hover:text-[#6d28d9]"
               onClick={() => setShowHint(true)}
-              disabled={showHint || isSubmitted}
+              disabled={showHint || isSubmitting || !!result}
             >
-              <HelpCircle className="h-4 w-4" />
+              <HelpCircle className="mr-2 h-4 w-4" />
               Show Hint
             </Button>
           )}
         </div>
+
+        {result && (
+          <Alert
+            variant="default"
+            className={cn(
+              "rounded-xl",
+              result.validity
+                ? "border-green-300 bg-green-100 text-green-700"
+                : "border-red-300 bg-red-100 text-red-700",
+            )}
+          >
+            {result.validity ? (
+              <CheckCircle className="h-5 w-5" />
+            ) : (
+              <X className="h-5 w-5" />
+            )}
+            <AlertTitle>{result.validity ? "Correct" : "Wrong"}</AlertTitle>
+            <AlertDescription>{question.funFacts[0].text}</AlertDescription>
+          </Alert>
+        )}
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
+import Game from "@/pages/Game";
 import Landing from "@/pages/Landing";
 import Lobby from "@/pages/Lobby";
 import { createBrowserRouter } from "react-router-dom";
-import Public from "./Public";
 import Private from "./Private";
-import Game from "@/pages/Game";
+import Public from "./Public";
 
 const routes = createBrowserRouter([
   {
@@ -13,17 +13,17 @@ const routes = createBrowserRouter([
         path: "/",
         element: <Landing />,
       },
-      {
-        path: "/lobby",
-        element: <Lobby />,
-      },
     ],
+  },
+  {
+    path: "/lobby",
+    element: <Lobby />,
   },
   {
     element: <Private />,
     children: [
       {
-        path: "/game",
+        path: "/game/:sessionId",
         element: <Game />,
       },
     ],

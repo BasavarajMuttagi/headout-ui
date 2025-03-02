@@ -17,3 +17,32 @@ export const getToken = () => {
 export const setToken = (token: string) => {
   localStorage.setItem("token", token);
 };
+
+type Clue = {
+  text: string;
+};
+
+type FunFact = {
+  text: string;
+};
+
+type TriviaItem = {
+  text: string;
+};
+
+type Option = {
+  id: string;
+  city: string;
+  country: string;
+};
+
+export type Question = {
+  imageUrl: string | null;
+  clues: Clue[];
+  funFacts: FunFact[];
+  triviaItems: TriviaItem[];
+  options: Option[];
+  id: string;
+  questionNumber: number;
+  totalQuestions: number;
+};
