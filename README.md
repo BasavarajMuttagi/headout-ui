@@ -59,8 +59,8 @@ Globetrotter engages players through:
 4. Start the development server
 
 ```bash
-git clone
-cd globetrotter-frontend
+git clone https://github.com/BasavarajMuttagi/headout-ui
+cd headout-ui
 npm install
 npm run dev
 ```
