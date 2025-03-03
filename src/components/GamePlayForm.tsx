@@ -82,8 +82,8 @@ export default function GamePlayForm({
   };
 
   return (
-    <div className="container mx-auto mt-20 max-w-3xl rounded-md border-[#e9d5ff] bg-white/80 shadow-md backdrop-blur-sm">
-      <div className="rounded-t-md bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] p-6 py-8">
+    <div className="container mx-auto mt-20 max-w-2xl rounded-md border-[#e9d5ff] bg-white/80 shadow-md backdrop-blur-sm">
+      <div className="rounded-t-md bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] p-4">
         <div className="flex items-center justify-between">
           <Badge
             variant="outline"
@@ -106,7 +106,7 @@ export default function GamePlayForm({
       </div>
 
       <div className="flex flex-col gap-6 p-6">
-        <Alert className="min-h-24 rounded-md border-[#d8b4fe] bg-[#f5edff] font-semibold text-[#6d28d9] italic">
+        <Alert className="rounded-md border-[#d8b4fe] bg-[#f5edff] font-semibold text-[#6d28d9] italic">
           <AlertDescription className="space-y-2 text-balance text-[#6d28d9]">
             {question.clues.map((clue, index) => (
               <div key={index}>{`${index + 1}. ${clue.text}`}</div>
@@ -140,7 +140,7 @@ export default function GamePlayForm({
                           <FormLabel
                             htmlFor={option.id}
                             className={cn(
-                              "flex w-full cursor-pointer items-center justify-between rounded-md border p-5",
+                              "flex w-full cursor-pointer items-center justify-between rounded-md border p-3",
                               getOptionStyle(option.id, field.value),
                             )}
                           >

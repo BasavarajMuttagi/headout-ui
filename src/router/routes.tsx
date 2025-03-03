@@ -1,3 +1,4 @@
+import Challenge from "@/pages/Challenge";
 import Game from "@/pages/Game";
 import Landing from "@/pages/Landing";
 import Lobby from "@/pages/Lobby";
@@ -25,6 +26,10 @@ const routes = createBrowserRouter([
       {
         path: "/game/:sessionId",
         element: <Game />,
+      },
+      {
+        path: "/share/:shareCode",
+        element: <Challenge />,
       },
     ],
   },

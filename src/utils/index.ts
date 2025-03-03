@@ -46,3 +46,11 @@ export type Question = {
   questionNumber: number;
   totalQuestions: number;
 };
+
+export type GameStats = {
+  totalQuestions: number;
+  score: number;
+  _count: {
+    sessionQuestions: number;
+  };
+};
