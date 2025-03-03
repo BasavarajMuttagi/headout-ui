@@ -9,7 +9,7 @@ import { GameStats } from "@/utils";
 import { Share2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import GameStatsCard from "./GameStatsCard";
-
+const FE_BASE_URL = import.meta.env.VITE_FE_URL;
 function SharePreview({ sessionId }: { sessionId: string }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -36,7 +36,7 @@ function SharePreview({ sessionId }: { sessionId: string }) {
           headers: { Authorization: `Bearer ${token}` },
         });
         setStats(stats.data);
-        setLink(`http://localhost:5173/share/${res.data.shareCode}`);
+        setLink(`${FE_BASE_URL}/share/${res.data.shareCode}`);
       } catch (error) {
         console.error("Failed to generate share link:", error);
         setError("Failed to generate share link");
