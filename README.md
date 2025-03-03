@@ -2,6 +2,11 @@
 
 Globetrotter is a full-stack travel guessing game challenging users to identify famous locations based on cryptic clues. This repository contains the frontend code for the application.
 
+
+![image](https://github.com/user-attachments/assets/23459ff0-5ed7-4a99-b090-f03ba92f7f56)
+![image](https://github.com/user-attachments/assets/7598ee74-b007-4b88-b528-94051487744c)
+![image](https://github.com/user-attachments/assets/7b931e0d-8855-4935-80ac-0d460645006e)
+
 ## ✨ Overview
 
 Globetrotter engages players through:
