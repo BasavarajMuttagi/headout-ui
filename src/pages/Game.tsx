@@ -23,7 +23,6 @@ export default function Game() {
   const navigate = useNavigate();
   const token = getToken();
   const [score, setScore] = useState(0);
-  const [answeredInSec, setAnsweredInSec] = useState(0);
   const getQuestions = useCallback(
     async (questionNumber: number) => {
       setLoadingQuestion(true);
@@ -51,15 +50,6 @@ export default function Game() {
     }
   }, [token, sessionId, navigate, getQuestions]);
 
-  const getFactor = () => {
-    if (answeredInSec > 20) {
-      return 1;
-    } else if (answeredInSec > 10) {
-      return 0.5;
-    } else {
-      return 0.2;
-    }
-  };
   const handleSubmit = useCallback(
     async (destinationId: string) => {
       if (!question) return null;
@@ -73,16 +63,12 @@ export default function Game() {
         );
         if (response.data.validity) {
           confettiRef.current?.fire();
-          const s = 10 * getFactor();
-          console.log(s,answeredInSec,score)
-          // console.log(getFactor(), answeredInSec);
-          setScore(score + s);
         }
         if (response.data.isComplete) {
           cannonRef.current?.fire();
           setIsGameCompleted(true);
         }
-        // getCurrentScore();
+        getCurrentScore();
         return response.data;
       } catch (error) {
         console.log("Error submitting answer:", error);
@@ -118,18 +104,18 @@ export default function Game() {
     }
   }, [token, navigate]);
 
-  // const getCurrentScore = useCallback(async () => {
-  //   try {
-  //     const res = await apiClient.get(`/game/session/${sessionId}/score`, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     });
+  const getCurrentScore = useCallback(async () => {
+    try {
+      const res = await apiClient.get(`/game/session/${sessionId}/score`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-  //     setScore(res.data.score);
-  //   } catch (error) {
-  //     console.log(error);
-  //     toast.error("Failed to fetch score");
-  //   }
-  // }, [sessionId, token]);
+      setScore(res.data.score);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch score");
+    }
+  }, [sessionId, token]);
 
   return (
     <ScrollArea className="relative h-screen">
@@ -150,7 +136,6 @@ export default function Game() {
                 handleSubmit={handleSubmit}
                 onNextQuestion={onNextQuestion}
                 score={score}
-                setAnsweredInSec={setAnsweredInSec}
               />
             ) : null}
           </div>

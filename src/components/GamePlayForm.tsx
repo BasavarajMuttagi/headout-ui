@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { Question } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Check, CheckCircle, HelpCircle, X } from "lucide-react";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { AnimatedCircularProgressBar } from "./magicui/animated-circular-progress-bar";
@@ -31,7 +31,6 @@ interface GamePlayFormProps {
   ) => Promise<{ validity: boolean; destinationId: string } | null>;
   onNextQuestion: () => void;
   score: number;
-  setAnsweredInSec: Dispatch<SetStateAction<number>>;
 }
 
 export default function GamePlayForm({
@@ -39,15 +38,13 @@ export default function GamePlayForm({
   handleSubmit,
   onNextQuestion,
   score,
-  setAnsweredInSec,
 }: GamePlayFormProps) {
-  const [timer, setTimer] = useState(30);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<{
     validity: boolean;
     destinationId: string;
   } | null>(null);
-  const myInterval: any = useRef(null);
+
   const [showHint, setShowHint] = useState(false);
 
   const form = useForm<FormValues>({
@@ -58,10 +55,7 @@ export default function GamePlayForm({
   });
 
   const onSubmit = async (values: FormValues) => {
-    console.log(myInterval.current);
-    clearInterval(myInterval.current);
     setIsSubmitting(true);
-    setAnsweredInSec(timer);
     const submissionResult = await handleSubmit(values.answer);
     setResult(submissionResult);
     setIsSubmitting(false);
@@ -87,18 +81,6 @@ export default function GamePlayForm({
     return null;
   };
 
-  useEffect(() => {
-    if (!myInterval.current) {
-      console.log("first");
-      myInterval.current = setInterval(() => {
-        setTimer((prev) => prev - 1);
-      }, 1000);
-    }
-
-    // return () => {
-    //   clearInterval(myInterval.current);
-    // };
-  }, []);
   return (
     <div className="container mx-auto mt-20 max-w-2xl rounded-md border-[#e9d5ff] bg-white/80 shadow-md backdrop-blur-sm">
       <div className="rounded-t-md bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] p-4">
@@ -109,7 +91,6 @@ export default function GamePlayForm({
           >
             Question {question.questionNumber}/{question.totalQuestions}
           </Badge>
-          <span>{timer}</span>
           <div>
             <AnimatedCircularProgressBar
               max={question.totalQuestions}
@@ -125,9 +106,6 @@ export default function GamePlayForm({
       </div>
 
       <div className="flex flex-col gap-6 p-6">
-        <span className="w-full rounded-md bg-violet-400 p-2">
-          <span></span>
-        </span>
         <Alert className="rounded-md border-[#d8b4fe] bg-[#f5edff] font-semibold text-[#6d28d9] italic">
           <AlertDescription className="space-y-2 text-balance text-[#6d28d9]">
             {question.clues.map((clue, index) => (
